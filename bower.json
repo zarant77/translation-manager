@@ -1,0 +1,17 @@
+{
+  "name": "translation-manager",
+  "dependencies": {
+    "lodash": "^4.5.0",
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "bootstrap-select": "^1.10.0",
+    "noty": "^2.3.8",
+    "flag-icon-css": "^1.2.0",
+    "x-editable": "^1.5.1",
+    "jquery-storage-api": "jQuery-Storage-API#^1.8.1",
+    "react": "^0.14.7"
+  },
+  "resolutions": {
+    "jquery": "~2.1.4"
+  }
+}

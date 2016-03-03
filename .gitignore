@@ -1,0 +1,6 @@
+.idea
+build
+cache
+dist
+node_modules
+src/vendor

@@ -1,0 +1,16 @@
+{
+  "name": "LocalizationManager",
+  "main": "index.html",
+  "version": "0.0.0",
+  "single-instance": true,
+  "window": {
+    "title": "Localization manager",
+    "icon": "favicon.png",
+    "width": 1024,
+    "height": 768,
+    "min_width": 800,
+    "min_height": 600,
+    "toolbar": false
+  },
+  "chromium-args": "--child-clean-exit --no-sandbox"
+}

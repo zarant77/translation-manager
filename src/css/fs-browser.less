@@ -1,0 +1,29 @@
+#fs-browser {
+    .path {
+    }
+    .browser {
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    li {
+        display: block;
+        margin: 10px 0 10px 0;
+        cursor: pointer;
+
+        span {
+            margin-left: 10px;
+        }
+    }
+    li.folder {
+        span:before {
+            content: "["
+        }
+        span:after {
+            content: "]"
+        }
+    }
+}
