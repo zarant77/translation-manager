@@ -1,5 +1,5 @@
 var Settings = new function () {
-    $.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.type = 'textarea';
 
     $.noty.defaults.layout = 'topRight';

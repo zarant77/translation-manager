@@ -1,5 +1,7 @@
 var Editor = React.createClass({
     domEl: null,
+    domMenu: null,
+    domTree: null,
     getInitialState: function () {
         return {
             highlightClass: 'alert-danger'
@@ -11,9 +13,24 @@ var Editor = React.createClass({
             document.getElementById('tree-placeholder')
         );
     },
+    handleResize: function () {
+        this.domTree.height(window.innerHeight - this.domMenu.height());
+    },
     componentDidMount: function () {
         this.domEl = $(ReactDOM.findDOMNode(this));
+        this.domMenu = this.domEl.find('.menu');
+        this.domTree = this.domEl.find('.tree');
+
+        window.addEventListener('resize', this.handleResize);
+
         this.renderTree();
+        this.handleResize();
+
+        this.domTree.find('.toggler').first().remove();
+        this.domTree.find('.title').first().remove();
+    },
+    componentWillUnmount: function () {
+        window.removeEventListener('resize', this.handleResize);
     },
     onFileSelect: function (filename, language) {
         Tree.load(
@@ -34,7 +51,7 @@ var Editor = React.createClass({
     },
     openFileBrowser: function () {
         ReactDOM.render(
-            <FsBrowser onOk={this.onFileSelect} onCancel={this.onFileCancel} />,
+            <FsBrowser onOk={this.onFileSelect} onCancel={this.onFileCancel}/>,
             document.getElementById('container')
         );
     },
@@ -44,14 +61,22 @@ var Editor = React.createClass({
         });
     },
     closeAllNodes: function () {
-        this.domEl.find('.toggler.opened').trigger('click');
+        this.domTree.find('.opened').trigger('click');
     },
     openAllNodes: function () {
-        this.domEl.find('.toggler.closed').trigger('click');
+        this.domTree.find('.closed').trigger('click');
     },
     createGroup: function () {
+        ReactDOM.render(
+            <TreeNode node={Tree.createNode(null, true)}/>,
+            $('<li>').appendTo(this.domTree.find('.content')).get(0)
+        );
     },
     createConstant: function () {
+        ReactDOM.render(
+            <TreeNode node={Tree.createNode(null, false)}/>,
+            $('<li>').appendTo(this.domTree.find('.content')).get(0)
+        );
     },
     removeLang: function (evt) {
         var self = this;
@@ -81,45 +106,68 @@ var Editor = React.createClass({
 
         return (
             <div id="editor">
-                <div className="menu row">
+                <div className="row menu">
                     <div className="col-md-6">
                         <div className="row">
-                            <div className="btn-group" role="group">
-                                <button className="btn btn-primary btn-open-file" onClick={self.openFileBrowser}>
-                                    <i className="glyphicon glyphicon-floppy-open"></i>
-                                    <span>Load file</span>
+                            <div className="btn-group">
+                                <button type="button"
+                                        className="btn btn-default dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    File <span className="caret"></span>
                                 </button>
-
-                                <button className="btn btn-primary btn-save-file" onClick={self.saveFiles}>
-                                    <i className="glyphicon glyphicon-floppy-save"></i>
-                                    <span>Save file</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="btn-group" role="group">
-                                <button className="btn btn-primary btn-close-all" onClick={self.closeAllNodes}>
-                                    <i className="glyphicon glyphicon-minus-sign"></i>
-                                    <span>Close all</span>
-                                </button>
-
-                                <button className="btn btn-primary btn-open-all" onClick={self.openAllNodes}>
-                                    <i className="glyphicon glyphicon-plus-sign"></i>
-                                    <span>Open all</span>
-                                </button>
+                                <ul className="dropdown-menu">
+                                    <li>
+                                        <a href="#" onClick={self.openFileBrowser}>
+                                            <i className="glyphicon glyphicon-floppy-open"></i>
+                                            <span>Load file</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onClick={self.saveFiles}>
+                                            <i className="glyphicon glyphicon-floppy-save"></i>
+                                            <span>Save file</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
 
-                            <div className="btn-group" role="group">
-                                <button className="btn btn-primary btn-create-root-group" onClick={self.createGroup}>
-                                    <i className="glyphicon glyphicon-folder-open"></i>
-                                    <span>Create group</span>
+                            <div className="btn-group">
+                                <button type="button"
+                                        className="btn btn-default dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    Tree <span className="caret"></span>
                                 </button>
-
-                                <button className="btn btn-primary btn-create-root-constant" onClick={self.createConstant}>
-                                    <i className="glyphicon glyphicon-tag"></i>
-                                    <span>Create constant</span>
-                                </button>
+                                <ul className="dropdown-menu">
+                                    <li>
+                                        <a href="#" onClick={self.closeAllNodes}>
+                                            <i className="glyphicon glyphicon-minus-sign"></i>
+                                            <span>Collapse all nodes</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onClick={self.openAllNodes}>
+                                            <i className="glyphicon glyphicon-plus-sign"></i>
+                                            <span>Expand all nodes</span>
+                                        </a>
+                                    </li>
+                                    <li role="separator" className="divider"></li>
+                                    <li>
+                                        <a href="#" onClick={self.createGroup}>
+                                            <i className="glyphicon glyphicon-folder-open"></i>
+                                            <span>Create root group</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onClick={self.createConstant}>
+                                            <i className="glyphicon glyphicon-tag"></i>
+                                            <span>Create root constant</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
@@ -131,20 +179,22 @@ var Editor = React.createClass({
 
                                 <input id="input-search" className="form-control" type="text"
                                        placeholder="Type to search..." onChange={this.search}/>
-                                <span id="search-reset" className="glyphicon glyphicon-remove-circle" onClick={self.searchReset}></span>
+                                <span id="search-reset" className="glyphicon glyphicon-remove-circle"
+                                      onClick={self.searchReset}></span>
                             </div>
                         </div>
                     </div>
 
                     <div className="col-md-6">
                         <div id="file-list">
-                            <ul>
+                            <ul className="form-control">
                                 {
                                     _.map(FileLoader.getListOfFiles(), function (filename, lang) {
                                         return <li key={lang} className={lang} data-lang={lang}>
                                             <span className={'flag-icon flag-icon-' + lang}></span>
                                             <span className="title">{filename.split('/').pop()}</span>
-                                            <span className="btn btn-danger btn-xs btn-delete" onClick={self.removeLang}>
+                                            <span className="btn btn-danger btn-xs btn-delete"
+                                                  onClick={self.removeLang}>
                                                 <i className="glyphicon glyphicon-trash"></i>
                                             </span>
                                         </li>

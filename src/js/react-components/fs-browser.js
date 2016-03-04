@@ -76,37 +76,39 @@ var FsBrowser = React.createClass({
 
         return (
             <div>
-                <div id="fs-browser" className="panel panel-default">
-                    <div className="panel-heading">
-                        Select JSON file which contains translations
-                    </div>
-                    <div className="panel-body">
-                        <div className="alert alert-info" role="alert">
-                            <div className="path">{this.state.dir}</div>
+                <div id="fs-browser">
+                    <div className="panel panel-default">
+                        <div className="panel-heading">
+                            Select JSON file which contains translations
                         </div>
-                        <div className="browser">
-                            <ul>
-                                <li onClick={this.openDir} className="folder glyphicon glyphicon-folder-open">
-                                    <span>..</span>
-                                </li>
-                                {
-                                    this.state.files.map(function (file) {
-                                        var className = (fs.statSync(path.join(self.state.dir, file)).isDirectory())
-                                            ? 'folder glyphicon glyphicon-folder-open'
-                                            : 'file glyphicon glyphicon-file';
+                        <div className="panel-body">
+                            <div className="alert alert-info" role="alert">
+                                <div className="path">{this.state.dir}</div>
+                            </div>
+                            <div className="browser">
+                                <ul>
+                                    <li onClick={this.openDir} className="folder glyphicon glyphicon-folder-open">
+                                        <span>..</span>
+                                    </li>
+                                    {
+                                        this.state.files.map(function (file) {
+                                            var className = (fs.statSync(path.join(self.state.dir, file)).isDirectory())
+                                                ? 'folder glyphicon glyphicon-folder-open'
+                                                : 'file glyphicon glyphicon-file';
 
-                                        return <li key={file} onClick={self.openDir} className={className}>
-                                            <span>{file}</span>
-                                        </li>
-                                    })
-                                }
-                            </ul>
+                                            return <li key={file} onClick={self.openDir} className={className}>
+                                                <span>{file}</span>
+                                            </li>
+                                        })
+                                    }
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div className="panel-footer">
-                        <button className="btn btn-default" onClick={self.onCancel}>
-                            Cancel
-                        </button>
+                        <div className="panel-footer">
+                            <button className="btn btn-default" onClick={self.onCancel}>
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
 
