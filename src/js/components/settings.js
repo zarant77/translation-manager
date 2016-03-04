@@ -1,5 +1,12 @@
-var Settings = {
-    langList: {
+var Settings = new function () {
+    $.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.type = 'textarea';
+
+    $.noty.defaults.layout = 'topRight';
+    $.noty.defaults.theme = 'relax';
+    $.noty.defaults.timeout = 10000;
+
+    this.langList = {
         'cn': {title: 'Chinese, Mandarin', detect: ['cn', 'chinese']},
         'gb': {title: 'English', detect: ['en', 'eng', 'english', 'gb', 'us']},
         'es': {title: 'Spanish', detect: ['es', 'spanish']},
@@ -17,9 +24,5 @@ var Settings = {
         'pl': {title: 'Polish', detect: ['pl', 'polish']},
         'ua': {title: 'Ukrainian', detect: ['ua', 'ukr', 'ukrainian']},
         'nl': {title: 'Dutch', detect: ['nl', 'dutch']}
-    },
-    init: function () {
-        $.fn.editable.defaults.mode = 'popup';
-        $.fn.editable.defaults.type = 'textarea';
-    }
-};
+    };
+}();

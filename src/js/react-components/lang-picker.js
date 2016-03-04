@@ -25,20 +25,11 @@ var LangPicker = React.createClass({
     componentDidMount: function () {
         this.domEl = $(ReactDOM.findDOMNode(this));
 
-        this.domEl.hide();
-
         this.domEl.find('select').selectpicker({
             style: 'btn-info',
             size: 10
         });
-    },
-    doOk: function () {
-        this.state.selectedLanguage = this.domEl.find('select').selectpicker('val');
-        MainController.onLanguageSelected(this.state.selectedLanguage);
-        this.domEl.hide();
-    },
-    doCancel: function () {
-        MainController.onOpenBrowser();
+
         this.domEl.hide();
     },
     show: function (lang) {
@@ -47,6 +38,22 @@ var LangPicker = React.createClass({
         this.domEl.show();
 
         this.domEl.find('select').selectpicker('val', this.state.selectedLanguage);
+    },
+    onOk: function () {
+        this.state.selectedLanguage = this.domEl.find('select').selectpicker('val');
+
+        if (typeof this.props.onOk === 'function') {
+            this.props.onOk(this.state.selectedLanguage);
+        }
+
+        this.domEl.hide();
+    },
+    onCancel: function () {
+        if (typeof this.props.onCancel === 'function') {
+            this.props.onCancel();
+        }
+
+        this.domEl.hide();
     },
     render: function () {
         var self = this;
@@ -69,11 +76,11 @@ var LangPicker = React.createClass({
                     </div>
                 </div>
                 <div className="panel-footer">
-                    <button className="btn btn-primary" type="button" onClick={self.doOk}>
+                    <button className="btn btn-primary" type="button" onClick={self.onOk}>
                         OK
                     </button>
                     &nbsp;
-                    <button className="btn btn-primary" type="button" onClick={self.doCancel}>
+                    <button className="btn btn-primary" type="button" onClick={self.onCancel}>
                         Cancel
                     </button>
                 </div>

@@ -8,4 +8,9 @@ if (process.env.DEBUG) {
     }
 }(jQuery));
 
-MainController.init();
+Tree.init();
+
+ReactDOM.render(
+    <StartScreen />,
+    $('#container').get(0)
+);

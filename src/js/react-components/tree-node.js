@@ -19,9 +19,12 @@ var TreeNode = React.createClass({
         domEl.editable();
 
         domEl.on('save', function (e, params) {
-            var id = domEl.parents('.block').first().attr('data-id');
-            var lang = domEl.parents('.translate').first().attr('data-lang');
+            var el = $(e.currentTarget);
+            var id = el.parents('li.block').first().attr('data-id') || el.parents('li.translate').first().attr('data-id');
+            var lang = el.parents('li.translate').first().attr('data-lang');
             var node = Tree.find(id);
+
+            console.log($(e.currentTarget), id, lang);
 
             if (node !== null) {
                 if ($(e.target).hasClass('title')) {
@@ -44,13 +47,13 @@ var TreeNode = React.createClass({
         var currentNode = this.props.node;
         var children = _.map(currentNode.children, function (node, index) {
             if (node.isGroup) {
-                return <li key={node.id} data-id={node.id}>
+                return <li className="block" key={node.id} data-id={node.id}>
                     <TreeNode node={node}/>
                 </li>
             }
             else {
                 return _.map(node.translations, function (text, lang) {
-                    return <li key={lang}>
+                    return <li className="translate" key={node.id+lang} data-id={node.id} data-lang={lang}>
                         <i className={'lang flag-icon flag-icon-' + lang}></i>
                         <div className="text">{text}</div>
                     </li>

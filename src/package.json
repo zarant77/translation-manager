@@ -1,16 +1,19 @@
 {
-  "name": "LocalizationManager",
+  "name": "TranslationManager",
   "main": "index.html",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "single-instance": true,
   "window": {
-    "title": "Localization manager",
+    "title": "Translation manager",
     "icon": "favicon.png",
     "width": 1024,
     "height": 768,
     "min_width": 800,
     "min_height": 600,
     "toolbar": false
+  },
+  "dependencies": {
+    "mime": "^1.3.4"
   },
   "chromium-args": "--child-clean-exit --no-sandbox"
 }

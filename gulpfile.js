@@ -4,22 +4,46 @@ var builder = require('gulp-node-webkit-builder');
 var concat = require('gulp-concat');
 var less = require('gulp-less');
 var minifyCss = require('gulp-minify-css');
+var tar = require('gulp-tar');
+var zip = require('gulp-zip');
+var gzip = require('gulp-gzip');
 
 var del = require('del');
 var fs = require('fs');
 
 const DIR_SRC = 'src';
 const DIR_DIST = 'dist';
+const platforms = ['linux32', 'linux64', 'win32', 'win64', 'osx32', 'osx64'];
+
+for (var i = 0; i < platforms.length; i++) {
+    (function(platform) {
+        gulp.task(platform, function () {
+            var task = gulp.src('./build/TranslationManager/' + platform + '/**');
+
+            if (platform.indexOf('linux') === 0) {
+                task = task.pipe(tar(platform + '.tar'))
+                    .pipe(gzip());
+            }
+            else {
+                task = task.pipe(zip(platform + '.zip'));
+            }
+
+            return task.pipe(gulp.dest('./build'));
+        });
+    })(platforms[i]);
+}
 
 gulp.task('clean', function () {
-    return del([DIR_DIST]);
+    return del([DIR_DIST, 'build']);
 });
 
 gulp.task('install', function (done) {
     if (!fs.existsSync(DIR_DIST + '/node_modules')) {
-        require('child_process').exec('npm install --production', {cwd: './' + DIR_DIST});
+        require('child_process').exec('npm install --production', {cwd: './' + DIR_DIST}, done);
     }
-    done();
+    else {
+        done();
+    }
 });
 
 gulp.task('copy-sources', function () {
@@ -71,7 +95,6 @@ gulp.task('js', function () {
 
 gulp.task('babel', function () {
     return gulp.src([
-            DIR_SRC + '/js/controllers/*.js',
             DIR_SRC + '/js/components/*.js',
             DIR_SRC + '/js/react-components/*.js',
             DIR_SRC + '/js/main.js'
@@ -87,10 +110,12 @@ gulp.task('build', function () {
     return gulp.src(['dist/**/*'])
         .pipe(builder({
             version: 'v0.12.3',
-            platforms: ['linux32', 'linux64', 'win32', 'win64', 'osx32', 'osx64']
+            platforms: platforms
         }));
 });
 
+gulp.task('compress', gulp.parallel(platforms));
+
 gulp.task('dist', gulp.series('clean', gulp.parallel('copy', 'js', 'babel', 'less')));
 
-gulp.task('default', gulp.series('dist', 'build'));
+gulp.task('default', gulp.series('dist', 'install', 'build', 'compress'));

@@ -55,6 +55,10 @@ var FileLoader = new function () {
         );
     };
 
+    this.getListOfFiles = function () {
+        return listOfFiles;
+    };
+
     this.getLanguages = function () {
         return Object.keys(listOfFiles);
     };

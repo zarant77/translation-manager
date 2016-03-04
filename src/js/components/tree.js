@@ -226,16 +226,16 @@ var Tree = new function () {
      * @returns {JSON}
      */
     this.getJSON = function (lang) {
-        var recursive = function (node) {
+        var recursive = function (nodes) {
             var result = {};
 
-            _.each(node, function (node) {
+            _.each(nodes, function (node) {
                 result[node.name] = (node.isGroup) ? recursive(node.children) : node.translations[lang];
             });
 
             return result;
         };
 
-        return recursive(tree);
+        return recursive(tree.children);
     };
 }();

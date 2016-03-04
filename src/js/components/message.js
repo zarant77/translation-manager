@@ -1,8 +1,4 @@
 var Message = new function () {
-    $.noty.defaults.layout = 'topRight';
-    $.noty.defaults.theme = 'relax';
-    $.noty.defaults.timeout = 10000;
-
     this.confirm = function (text, callback) {
         noty({
             text: text,

@@ -3,16 +3,43 @@ var path = require('path');
 var mime = require('mime');
 
 var FsBrowser = React.createClass({
+    domEl: null,
+    langPicker: null,
     allowedMimeTypes: ['application/json'],
     getInitialState: function () {
         return {
             dir: $.localStorage.get('BROWSER_DIR') || path.resolve('./'),
             files: [],
-            selectedFile: null
+            selectedFile: null,
+            selectedLanguage: null
         };
     },
-    closeBrowser: function () {
-        MainController.onCloseBrowser();
+    componentDidMount: function () {
+        this.domEl = $(ReactDOM.findDOMNode(this)).find('#fs-browser');
+
+        this.langPicker = ReactDOM.render(
+            <LangPicker onOk={this.onLangSelect} onCancel={this.onLangCancel}/>,
+            document.getElementById('lang-picker-placeholder')
+        );
+    },
+    onLangSelect: function (language) {
+        this.state.selectedLanguage = language;
+
+        if (typeof this.props.onOk === 'function') {
+            this.props.onOk(this.state.selectedFile, this.state.selectedLanguage);
+        }
+
+        this.domEl.hide();
+    },
+    onLangCancel: function () {
+        this.domEl.show();
+    },
+    onCancel: function () {
+        if (typeof this.props.onCancel === 'function') {
+            this.props.onCancel();
+        }
+
+        this.domEl.hide();
     },
     openDir: function (event) {
         var filename = path.join(this.state.dir, $(event.target).text());
@@ -29,14 +56,15 @@ var FsBrowser = React.createClass({
 
             this.state.selectedFile = filename;
 
-            MainController.onFileSelected(this.state.selectedFile);
+            this.domEl.hide();
+            this.langPicker.show(path.basename(filename, path.extname(filename)));
         }
     },
     readDir: function () {
         var stats = fs.lstatSync(this.state.dir);
 
         if (!stats.isDirectory()) {
-            this.state.dir = path.resolve('./')
+            this.state.dir = path.resolve('./');
         }
 
         this.state.files = fs.readdirSync(this.state.dir);
@@ -47,38 +75,42 @@ var FsBrowser = React.createClass({
         this.readDir();
 
         return (
-            <div id="fs-browser" className="panel panel-default">
-                <div className="panel-heading">
-                    Select JSON file which contains translations
-                </div>
-                <div className="panel-body">
-                    <div className="alert alert-info" role="alert">
-                        <div className="path">{this.state.dir}</div>
+            <div>
+                <div id="fs-browser" className="panel panel-default">
+                    <div className="panel-heading">
+                        Select JSON file which contains translations
                     </div>
-                    <div className="browser">
-                        <ul>
-                            <li onClick={this.openDir} className="folder glyphicon glyphicon-folder-open">
-                                <span>..</span>
-                            </li>
-                            {
-                                this.state.files.map(function (file) {
-                                    var className = (fs.statSync(path.join(self.state.dir, file)).isDirectory())
-                                        ? 'folder glyphicon glyphicon-folder-open'
-                                        : 'file glyphicon glyphicon-file';
+                    <div className="panel-body">
+                        <div className="alert alert-info" role="alert">
+                            <div className="path">{this.state.dir}</div>
+                        </div>
+                        <div className="browser">
+                            <ul>
+                                <li onClick={this.openDir} className="folder glyphicon glyphicon-folder-open">
+                                    <span>..</span>
+                                </li>
+                                {
+                                    this.state.files.map(function (file) {
+                                        var className = (fs.statSync(path.join(self.state.dir, file)).isDirectory())
+                                            ? 'folder glyphicon glyphicon-folder-open'
+                                            : 'file glyphicon glyphicon-file';
 
-                                    return <li key={file} onClick={self.openDir} className={className}>
-                                        <span>{file}</span>
-                                    </li>
-                                })
-                            }
-                        </ul>
+                                        return <li key={file} onClick={self.openDir} className={className}>
+                                            <span>{file}</span>
+                                        </li>
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="panel-footer">
+                        <button className="btn btn-default" onClick={self.onCancel}>
+                            Cancel
+                        </button>
                     </div>
                 </div>
-                <div className="panel-footer">
-                    <button className="btn btn-default" onClick={self.closeBrowser}>
-                        Cancel
-                    </button>
-                </div>
+
+                <div id="lang-picker-placeholder"></div>
             </div>
         );
     }
