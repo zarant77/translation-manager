@@ -206,11 +206,11 @@ var Tree = new function () {
      * Adds empty node to the Tree
      */
     this.createNode = function (parentId, isGroup) {
-        var parentNode = (listById[parentId] !== undefined) ? listById[parentId].children : tree;
+        var parentNode = (listById[parentId] !== undefined) ? listById[parentId].children : tree.children;
         var id = generateId();
         var key = 'NEW_NODE_' + id;
 
-        parentNode[id] = new Node(id, key, _.union(parentNode.path || [], [key]));
+        parentNode[id] = new Node(id, key, _.union(parentNode.path || [], [key]), parentNode);
         parentNode[id].isGroup = !!isGroup;
 
         // Store references

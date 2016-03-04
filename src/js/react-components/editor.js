@@ -67,16 +67,12 @@ var Editor = React.createClass({
         this.domTree.find('.closed').trigger('click');
     },
     createGroup: function () {
-        ReactDOM.render(
-            <TreeNode node={Tree.createNode(null, true)}/>,
-            $('<li>').appendTo(this.domTree.find('.content')).get(0)
-        );
+        Tree.createNode(null, true);
+        this.renderTree();
     },
     createConstant: function () {
-        ReactDOM.render(
-            <TreeNode node={Tree.createNode(null, false)}/>,
-            $('<li>').appendTo(this.domTree.find('.content')).get(0)
-        );
+        Tree.createNode(null, false);
+        this.renderTree();
     },
     removeLang: function (evt) {
         var self = this;
