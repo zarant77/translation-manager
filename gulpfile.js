@@ -77,7 +77,7 @@ gulp.task('less', function () {
         .pipe(gulp.dest(DIR_DIST + '/css'));
 });
 
-gulp.task('js', function () {
+gulp.task('js-lib', function () {
     return gulp.src([
             DIR_SRC + '/vendor/jquery/dist/jquery.min.js',
             DIR_SRC + '/vendor/jquery-storage-api/jquery.storageapi.min.js',
@@ -93,10 +93,10 @@ gulp.task('js', function () {
         .pipe(gulp.dest(DIR_DIST + '/js'));
 });
 
-gulp.task('babel', function () {
+gulp.task('js-app', function () {
     return gulp.src([
-            DIR_SRC + '/js/components/*.js',
-            DIR_SRC + '/js/react-components/*.js',
+            DIR_SRC + '/js/components/**/*.js',
+            DIR_SRC + '/js/controllers/**/*.js',
             DIR_SRC + '/js/main.js'
         ])
         .pipe(babel({
@@ -116,6 +116,8 @@ gulp.task('build', function () {
 
 gulp.task('compress', gulp.parallel(platforms));
 
-gulp.task('dist', gulp.series('clean', gulp.parallel('copy', 'js', 'babel', 'less')));
+gulp.task('dist', gulp.series('clean', gulp.parallel('copy', 'js-lib', 'js-app', 'less')));
+
+gulp.task('dist-dev', gulp.parallel('js-app', 'less'));
 
 gulp.task('default', gulp.series('dist', 'install', 'build', 'compress'));

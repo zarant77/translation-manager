@@ -19,10 +19,17 @@
     }
 
     .toggler {
+        position: relative;
         display: inline-block;
         margin: 0 0 0 -16px;
         width: 16px;
         height: 16px;
+
+        i {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+        }
     }
 
     .title {
@@ -32,6 +39,7 @@
 
     .content {
         margin: 0 0 0 10px;
+        overflow: hidden;
     }
 
     .translate {
@@ -42,16 +50,41 @@
         margin: 0 0 0 10px;
     }
 
-    .content.closed {
-        overflow: hidden;
-        height: 0;
-    }
-
     .lang {
         margin-right: 10px;
     }
 
     .text {
         display: inline-block;
+    }
+}
+
+// expanded node
+.tree-node {
+    .toggler .collapse-node {
+        opacity: 0;
+        transition: opacity .5s;
+    }
+    .toggler .expand-node {
+        opacity: 1;
+        transition: opacity .5s;
+    }
+    .content {
+        opacity: 1;
+        max-height: 10000px;
+        transition: max-height .5s, opacity 1s;
+    }
+}
+
+.tree-node.collapsed {
+    .toggler .collapse-node {
+        opacity: 1;
+    }
+    .toggler .expand-node {
+        opacity: 0;
+    }
+    .content {
+        opacity: 0;
+        max-height: 0;
     }
 }

@@ -18,9 +18,12 @@ var FsBrowser = React.createClass({
         this.domEl = $(ReactDOM.findDOMNode(this)).find('#fs-browser');
 
         this.langPicker = ReactDOM.render(
-            <LangPicker onOk={this.onLangSelect} onCancel={this.onLangCancel}/>,
+            <LangPicker onOk={this.onLangSelect} onCancel={this.show}/>,
             document.getElementById('lang-picker-placeholder')
         );
+    },
+    show: function () {
+        this.domEl.show();
     },
     onLangSelect: function (language) {
         this.state.selectedLanguage = language;
@@ -30,9 +33,6 @@ var FsBrowser = React.createClass({
         }
 
         this.domEl.hide();
-    },
-    onLangCancel: function () {
-        this.domEl.show();
     },
     onCancel: function () {
         if (typeof this.props.onCancel === 'function') {
