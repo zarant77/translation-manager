@@ -11,6 +11,11 @@ if (process.env.DEBUG) {
 Tree.init();
 
 ReactDOM.render(
+    <MainMenu />,
+    $('#menu').get(0)
+);
+
+ReactDOM.render(
     <StartScreen />,
     $('#container').get(0)
 );
