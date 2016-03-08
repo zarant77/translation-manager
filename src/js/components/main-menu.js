@@ -72,18 +72,20 @@ var MainMenu = React.createClass({
         });
     },
     closeAllNodes: function () {
-        $('.opened').trigger('click');
+        $('.tree-node:gt(0)').addClass('collapsed');
     },
     openAllNodes: function () {
-        $('.closed').trigger('click');
+        $('.tree-node:gt(0)').removeClass('collapsed');
     },
     createGroup: function () {
         Tree.createNode(null, true);
         this.renderEditor();
+        this.domTree.animate({scrollTop: this.domTree.height()});
     },
     createConstant: function () {
         Tree.createNode(null, false);
         this.renderEditor();
+        this.domTree.animate({scrollTop: this.domTree.height()});
     },
     search: function () {
         var text = $('#input-search').val();

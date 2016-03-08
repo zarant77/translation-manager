@@ -1,19 +1,9 @@
 var TreeNode = React.createClass({
-    cssClasses: {
-        blockOpened: 'glyphicon glyphicon-minus opened',
-        blockClosed: 'glyphicon glyphicon-plus closed'
-    },
     getInitialState: function () {
-        return {
-            visible: true
-        };
+        return {};
     },
     toggle: function (evt) {
-        this.setState({visible: !this.state.visible});
-
-        var domEl = $(evt.target);
-        domEl.toggleClass(this.cssClasses.blockOpened);
-        domEl.toggleClass(this.cssClasses.blockClosed);
+        $(evt.target).parents('.tree-node').first().toggleClass('collapsed');
     },
     makeEditable: function (domEl) {
         domEl.editable();
@@ -61,13 +51,14 @@ var TreeNode = React.createClass({
             }
         });
 
-        var style = (!this.state.visible) ? {display: "none"} : {};
-
         return (
             <div className="tree-node">
-                <div className={'toggler ' + this.cssClasses.blockOpened} onClick={self.toggle}></div>
+                <div className="toggler" onClick={self.toggle}>
+                    <i className="glyphicon glyphicon-plus collapse-node"></i>
+                    <i className="glyphicon glyphicon-minus expand-node"></i>
+                </div>
                 <div className="title">{currentNode.name}</div>
-                <ul style={style} className="content">
+                <ul className="content">
                     {children}
                 </ul>
             </div>
