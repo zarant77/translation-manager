@@ -5,25 +5,30 @@ var TreeNode = React.createClass({
     toggle: function (evt) {
         $(evt.target).parents('.tree-node').first().toggleClass('collapsed');
     },
+    getDataId: function (evt) {
+        return $(evt.target).parents('li').first().attr('data-id');
+    },
     deleteNode: function (evt) {
         var self = this;
-        var id = $(evt.target).parents('li').first().attr('data-id');
+        var domLi = $(evt.target).parents('li').first();
+        var title = domLi.find('.title').first().text();
 
         Message.confirm('Are you sure you want to delete this node?', function () {
-            var node = Tree.find(id);
+            var node = Tree.find(domLi.attr('data-id'));
 
             if (node) {
+                Message.info('"' + title + '" was removed');
                 node.destroy();
-                self.forceUpdate();
+                domLi.remove();
             }
         });
     },
     addConstant: function (evt) {
-        Tree.createNode($(evt.target).parents('li').first().attr('data-id'), false);
+        Tree.createNode(this.getDataId(evt), false);
         this.forceUpdate();
     },
     addGroup: function (evt) {
-        Tree.createNode($(evt.target).parents('li').first().attr('data-id'), true);
+        Tree.createNode(this.getDataId(evt), true);
         this.forceUpdate();
     },
     makeEditable: function (domEl) {

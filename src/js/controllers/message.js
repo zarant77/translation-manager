@@ -26,7 +26,11 @@ var Message = new function () {
     };
 
     this.info = function (text) {
-        noty({type: 'info', text: text});
+        noty({type: 'information', text: text});
+    };
+
+    this.alert = function (text) {
+        noty({type: 'alert', text: text});
     };
 
     this.success = function (text) {

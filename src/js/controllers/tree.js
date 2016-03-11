@@ -91,7 +91,7 @@ var Tree = new function () {
                 parent = parent.parent;
             }
 
-            _.unset(tree, '[' + ids.reverse().join('].children[') + ']');
+            _.unset(tree, '.children[' + ids.reverse().join('].children[') + ']');
         };
 
         /**
