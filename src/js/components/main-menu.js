@@ -50,6 +50,8 @@ var MainMenu = React.createClass({
                 files: FileLoader.getListOfFiles()
             });
 
+            Message.success('File "' + filename.split('/').pop() + '" was removed');
+
             self.renderEditor();
         });
     },
@@ -57,13 +59,17 @@ var MainMenu = React.createClass({
         var fileData = FileLoader.loadFile(lang, filename);
 
         if (fileData) {
-            Tree.load(lang, fileData);
+            if (Tree.load(lang, fileData)) {
+                Message.success('File "' + filename.split('/').pop() + '" was loaded successfully');
+            }
+            else {
+                Message.warning('Can\'t load file "' + filename.split('/').pop() + '"');
+                FileLoader.removeFile(lang);
+            }
 
             this.setState({
                 files: FileLoader.getListOfFiles()
             });
-
-            Message.success('File "' + filename.split('/').pop() + '" was loaded successfully');
 
             this.renderEditor();
         }
@@ -90,12 +96,12 @@ var MainMenu = React.createClass({
     createGroup: function () {
         Tree.createNode(null, true);
         this.renderEditor();
-        this.domTree.animate({scrollTop: this.domTree.height()});
+        this.domTree.animate({scrollTop: this.domTree.find('ul').first().height()});
     },
     createConstant: function () {
         Tree.createNode(null, false);
         this.renderEditor();
-        this.domTree.animate({scrollTop: this.domTree.height()});
+        this.domTree.animate({scrollTop: this.domTree.find('ul').first().height()});
     },
     search: function () {
         var text = $('#input-search').val();
@@ -112,6 +118,7 @@ var MainMenu = React.createClass({
     },
     render: function () {
         var self = this;
+        var isFileListEmpty = (Object.keys(this.state.files).length === 0);
 
         var list = _.map(this.state.files, function (filename, lang) {
             return (
@@ -144,7 +151,7 @@ var MainMenu = React.createClass({
                                     <span>Load new file</span>
                                 </a>
                             </li>
-                            <li>
+                            <li className={isFileListEmpty ? 'disabled' : ''}>
                                 <a href="#" onClick={self.saveFiles}>
                                     <i className="glyphicon glyphicon-floppy-save"></i>
                                     <span>Save all files</span>
@@ -154,19 +161,23 @@ var MainMenu = React.createClass({
                     </div>
 
                     <div className="btn-group menu-item">
-                        <button className="btn btn-default" onClick={self.closeAllNodes} title="Collapse all nodes">
+                        <button className="btn btn-default" onClick={self.closeAllNodes} title="Collapse all nodes"
+                                disabled={isFileListEmpty}>
                             <i className="glyphicon glyphicon-minus-sign"></i>
                         </button>
 
-                        <button className="btn btn-default" onClick={self.openAllNodes} title="Expand all nodes">
+                        <button className="btn btn-default" onClick={self.openAllNodes} title="Expand all nodes"
+                                disabled={isFileListEmpty}>
                             <i className="glyphicon glyphicon-plus-sign"></i>
                         </button>
 
-                        <button className="btn btn-default" onClick={self.createGroup} title="Create root group">
+                        <button className="btn btn-default" onClick={self.createGroup} title="Create root group"
+                                disabled={isFileListEmpty}>
                             <i className="glyphicon glyphicon-folder-open"></i>
                         </button>
 
-                        <button className="btn btn-default" onClick={self.createConstant} title="Create root constant">
+                        <button className="btn btn-default" onClick={self.createConstant} title="Create root constant"
+                                disabled={isFileListEmpty}>
                             <i className="glyphicon glyphicon-tag"></i>
                         </button>
                     </div>
@@ -179,7 +190,9 @@ var MainMenu = React.createClass({
                         </label>
 
                         <input id="input-search" className="form-control" type="text"
-                               placeholder="Type to search..." onChange={this.search}/>
+                               placeholder="Type to search..." onChange={this.search}
+                               disabled={isFileListEmpty}/>
+
                             <span id="search-reset" className="glyphicon glyphicon-remove-circle"
                                   onClick={self.searchReset}></span>
                     </div>

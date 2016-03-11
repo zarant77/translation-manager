@@ -179,10 +179,12 @@ var Tree = new function () {
      */
     this.load = function (lang, data) {
         if (!lang || !data) {
-            return;
+            return false;
         }
 
         walk(lang, data, tree.children, [], null);
+
+        return true;
     };
 
     /**

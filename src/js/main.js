@@ -10,7 +10,7 @@ if (process.env.DEBUG) {
 
 Tree.init();
 
-ReactDOM.render(
+var mainMenu = ReactDOM.render(
     <MainMenu />,
     $('#menu').get(0)
 );

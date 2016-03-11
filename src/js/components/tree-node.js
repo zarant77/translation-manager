@@ -3,14 +3,10 @@ var TreeNode = React.createClass({
         return {};
     },
     toggle: function (evt) {
-        $(evt.target).parents('.tree-node').first().toggleClass('collapsed');
-    },
-    getDataId: function (evt) {
-        return $(evt.target).parents('li').first().attr('data-id');
+        $(evt.currentTarget).parents('.tree-node').first().toggleClass('collapsed');
     },
     deleteNode: function (evt) {
-        var self = this;
-        var domLi = $(evt.target).parents('li').first();
+        var domLi = $(evt.currentTarget).parents('li').first();
         var title = domLi.find('.title').first().text();
 
         Message.confirm('Are you sure you want to delete this node?', function () {
@@ -23,13 +19,20 @@ var TreeNode = React.createClass({
             }
         });
     },
-    addConstant: function (evt) {
-        Tree.createNode(this.getDataId(evt), false);
+    addNode: function (evt) {
+        var domBtn = $(evt.currentTarget);
+        var parentNode = domBtn.parents('li').first();
+
+        var node = Tree.createNode(
+            parentNode.attr('data-id'),
+            (domBtn.attr('data-type') === 'group')
+        );
+
         this.forceUpdate();
-    },
-    addGroup: function (evt) {
-        Tree.createNode(this.getDataId(evt), true);
-        this.forceUpdate();
+
+        setTimeout(function () {
+            document.location = '#tree-node-' + node.id;
+        }, 100);
     },
     makeEditable: function (domEl) {
         domEl.editable();
@@ -39,8 +42,6 @@ var TreeNode = React.createClass({
             var id = el.parents('li.block').first().attr('data-id') || el.parents('li.translate').first().attr('data-id');
             var lang = el.parents('li.translate').first().attr('data-lang');
             var node = Tree.find(id);
-
-            //console.log($(e.currentTarget), id, lang);
 
             if (node !== null) {
                 if ($(e.target).hasClass('title')) {
@@ -71,13 +72,13 @@ var TreeNode = React.createClass({
 
         if (currentNode.isGroup) {
             buttons.addGroup = (
-                <button className="btn btn-default btn-xs btn-add-group" onClick={this.addGroup}>
+                <button className="btn btn-default btn-xs btn-add-group" data-type="group" onClick={this.addNode}>
                     <i className="glyphicon glyphicon-folder-open"></i>
                 </button>
             );
 
             buttons.addConstant = (
-                <button className="btn btn-default btn-xs btn-add-constant" onClick={this.addConstant}>
+                <button className="btn btn-default btn-xs btn-add-constant" data-type="constant" onClick={this.addNode}>
                     <i className="glyphicon glyphicon-tag"></i>
                 </button>
             );
@@ -91,7 +92,7 @@ var TreeNode = React.createClass({
             });
 
             return (
-                <div className="tree-node tree-group">
+                <div className="tree-node tree-group" id={'tree-node-' + currentNode.id}>
                     <div className="info">
                         <div className="toggler" onClick={this.toggle}>
                             <i className="glyphicon glyphicon-plus collapse-node"></i>
@@ -119,7 +120,7 @@ var TreeNode = React.createClass({
             });
 
             return (
-                <div className="tree-node tree-constant">
+                <div className="tree-node tree-constant" id={'tree-node-' + currentNode.id}>
                     <div className="info">
                         <div className="title">{currentNode.name}</div>
                         <div className="buttons">

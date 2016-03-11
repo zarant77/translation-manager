@@ -40,7 +40,14 @@ var LangPicker = React.createClass({
         this.domEl.find('select').selectpicker('val', this.state.selectedLanguage);
     },
     onOk: function () {
-        this.state.selectedLanguage = this.domEl.find('select').selectpicker('val');
+        var lang = this.domEl.find('select').selectpicker('val');
+
+        if (!lang) {
+            Message.warning('Please select language for this file');
+            return;
+        }
+
+        this.state.selectedLanguage = lang;
 
         if (typeof this.props.onOk === 'function') {
             this.props.onOk(this.state.selectedLanguage);
