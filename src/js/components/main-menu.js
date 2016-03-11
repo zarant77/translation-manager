@@ -21,13 +21,23 @@ var MainMenu = React.createClass({
         window.removeEventListener('resize', this.handleResize);
     },
     renderEditor: function () {
-        ReactDOM.render(
-            <TreeNode node={Tree.getTree()}/>,
-            this.domTree.get(0)
-        );
+        if (Object.keys(FileLoader.getListOfFiles()).length === 0) {
+            // Reset tree
+            Tree.init();
 
-        this.domTree.find('.toggler').first().remove();
-        this.domTree.find('.title').first().remove();
+            ReactDOM.render(
+                <StartScreen />,
+                $('#container').get(0)
+            );
+        }
+        else {
+            ReactDOM.render(
+                <TreeNode node={Tree.getTree()}/>,
+                this.domTree.get(0)
+            );
+
+            this.domTree.find('.info').first().remove();
+        }
     },
     removeLangFile: function (evt) {
         var self = this;
@@ -72,10 +82,10 @@ var MainMenu = React.createClass({
         });
     },
     closeAllNodes: function () {
-        $('.tree-node:gt(0)').addClass('collapsed');
+        $('.tree-group:gt(0)').addClass('collapsed');
     },
     openAllNodes: function () {
-        $('.tree-node:gt(0)').removeClass('collapsed');
+        $('.tree-group:gt(0)').removeClass('collapsed');
     },
     createGroup: function () {
         Tree.createNode(null, true);
@@ -144,19 +154,19 @@ var MainMenu = React.createClass({
                     </div>
 
                     <div className="btn-group menu-item">
-                        <button className="btn btn-primary" onClick={self.closeAllNodes} title="Collapse all nodes">
+                        <button className="btn btn-default" onClick={self.closeAllNodes} title="Collapse all nodes">
                             <i className="glyphicon glyphicon-minus-sign"></i>
                         </button>
 
-                        <button className="btn btn-primary" onClick={self.openAllNodes} title="Expand all nodes">
+                        <button className="btn btn-default" onClick={self.openAllNodes} title="Expand all nodes">
                             <i className="glyphicon glyphicon-plus-sign"></i>
                         </button>
 
-                        <button className="btn btn-primary" onClick={self.createGroup} title="Create root group">
+                        <button className="btn btn-default" onClick={self.createGroup} title="Create root group">
                             <i className="glyphicon glyphicon-folder-open"></i>
                         </button>
 
-                        <button className="btn btn-primary" onClick={self.createConstant} title="Create root constant">
+                        <button className="btn btn-default" onClick={self.createConstant} title="Create root constant">
                             <i className="glyphicon glyphicon-tag"></i>
                         </button>
                     </div>

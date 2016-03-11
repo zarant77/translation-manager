@@ -5,6 +5,27 @@ var TreeNode = React.createClass({
     toggle: function (evt) {
         $(evt.target).parents('.tree-node').first().toggleClass('collapsed');
     },
+    deleteNode: function (evt) {
+        var self = this;
+        var id = $(evt.target).parents('li').first().attr('data-id');
+
+        Message.confirm('Are you sure you want to delete this node?', function () {
+            var node = Tree.find(id);
+
+            if (node) {
+                node.destroy();
+                self.forceUpdate();
+            }
+        });
+    },
+    addConstant: function (evt) {
+        Tree.createNode($(evt.target).parents('li').first().attr('data-id'), false);
+        this.forceUpdate();
+    },
+    addGroup: function (evt) {
+        Tree.createNode($(evt.target).parents('li').first().attr('data-id'), true);
+        this.forceUpdate();
+    },
     makeEditable: function (domEl) {
         domEl.editable();
 
@@ -14,7 +35,7 @@ var TreeNode = React.createClass({
             var lang = el.parents('li.translate').first().attr('data-lang');
             var node = Tree.find(id);
 
-            console.log($(e.currentTarget), id, lang);
+            //console.log($(e.currentTarget), id, lang);
 
             if (node !== null) {
                 if ($(e.target).hasClass('title')) {
@@ -33,35 +54,78 @@ var TreeNode = React.createClass({
         this.makeEditable(domEl.find('.text'));
     },
     render: function () {
-        var self = this;
         var currentNode = this.props.node;
-        var children = _.map(currentNode.children, function (node, index) {
-            if (node.isGroup) {
-                return <li className="block" key={node.id} data-id={node.id}>
-                    <TreeNode node={node}/>
-                </li>
-            }
-            else {
-                return _.map(node.translations, function (text, lang) {
-                    return <li className="translate" key={node.id+lang} data-id={node.id} data-lang={lang}>
-                        <i className={'lang flag-icon flag-icon-' + lang}></i>
-                        <div className="text">{text}</div>
-                    </li>
-                });
-            }
-        });
 
-        return (
-            <div className="tree-node">
-                <div className="toggler" onClick={self.toggle}>
-                    <i className="glyphicon glyphicon-plus collapse-node"></i>
-                    <i className="glyphicon glyphicon-minus expand-node"></i>
+        var buttons = {
+            deleteNode: (
+                <button className="btn btn-default btn-xs btn-delete" onClick={this.deleteNode}>
+                    <i className="glyphicon glyphicon-trash"></i>
+                </button>
+            )
+        };
+
+        if (currentNode.isGroup) {
+            buttons.addGroup = (
+                <button className="btn btn-default btn-xs btn-add-group" onClick={this.addGroup}>
+                    <i className="glyphicon glyphicon-folder-open"></i>
+                </button>
+            );
+
+            buttons.addConstant = (
+                <button className="btn btn-default btn-xs btn-add-constant" onClick={this.addConstant}>
+                    <i className="glyphicon glyphicon-tag"></i>
+                </button>
+            );
+
+            var children = _.map(currentNode.children, function (node, index) {
+                return (
+                    <li className="block" key={node.id} data-id={node.id}>
+                        <TreeNode node={node}/>
+                    </li>
+                );
+            });
+
+            return (
+                <div className="tree-node tree-group">
+                    <div className="info">
+                        <div className="toggler" onClick={this.toggle}>
+                            <i className="glyphicon glyphicon-plus collapse-node"></i>
+                            <i className="glyphicon glyphicon-minus expand-node"></i>
+                        </div>
+                        <div className="title">{currentNode.name}</div>
+                        <div className="buttons">
+                            {buttons.addGroup}
+                            {buttons.addConstant}
+                            {buttons.deleteNode}
+                        </div>
+                    </div>
+                    <ul className="content">
+                        {children}
+                    </ul>
                 </div>
-                <div className="title">{currentNode.name}</div>
-                <ul className="content">
-                    {children}
-                </ul>
-            </div>
-        );
+            );
+        }
+        else {
+            var translations = _.map(FileLoader.getLanguages(), function (lang) {
+                return <li className="translate" key={currentNode.id+lang} data-id={currentNode.id} data-lang={lang}>
+                    <i className={'lang flag-icon flag-icon-' + lang}></i>
+                    <div className="text">{currentNode.translations[lang] || ''}</div>
+                </li>
+            });
+
+            return (
+                <div className="tree-node tree-constant">
+                    <div className="info">
+                        <div className="title">{currentNode.name}</div>
+                        <div className="buttons">
+                            {buttons.deleteNode}
+                        </div>
+                    </div>
+                    <ul className="content">
+                        {translations}
+                    </ul>
+                </div>
+            );
+        }
     }
 });
