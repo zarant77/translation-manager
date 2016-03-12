@@ -4,7 +4,7 @@ var Settings = new function () {
 
     $.noty.defaults.layout = 'topRight';
     $.noty.defaults.theme = 'relax';
-    $.noty.defaults.timeout = 10000;
+    $.noty.defaults.timeout = 5000;
 
     this.langList = {
         'cn': {title: 'Chinese, Mandarin', detect: ['cn', 'chinese']},

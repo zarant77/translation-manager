@@ -21,43 +21,17 @@ var TreeNode = React.createClass({
     },
     addNode: function (evt) {
         var domBtn = $(evt.currentTarget);
-        var parentNode = domBtn.parents('li').first();
 
-        var node = Tree.createNode(
-            parentNode.attr('data-id'),
+        mainMenu.addNode(
+            domBtn.parents('li').first().attr('data-id'),
             (domBtn.attr('data-type') === 'group')
         );
-
-        this.forceUpdate();
-
-        setTimeout(function () {
-            document.location = '#tree-node-' + node.id;
-        }, 100);
-    },
-    makeEditable: function (domEl) {
-        domEl.editable();
-
-        domEl.on('save', function (e, params) {
-            var el = $(e.currentTarget);
-            var id = el.parents('li.block').first().attr('data-id') || el.parents('li.translate').first().attr('data-id');
-            var lang = el.parents('li.translate').first().attr('data-lang');
-            var node = Tree.find(id);
-
-            if (node !== null) {
-                if ($(e.target).hasClass('title')) {
-                    node.rename(params.newValue);
-                }
-                else if (!node.isGroup) {
-                    node.update(lang, params.newValue);
-                }
-            }
-        });
     },
     componentDidMount: function () {
         var domEl = $(ReactDOM.findDOMNode(this));
 
-        this.makeEditable(domEl.find('.title'));
-        this.makeEditable(domEl.find('.text'));
+        Editable.make(domEl.find('.title'));
+        Editable.make(domEl.find('.text'));
     },
     render: function () {
         var currentNode = this.props.node;
@@ -98,7 +72,7 @@ var TreeNode = React.createClass({
                             <i className="glyphicon glyphicon-plus collapse-node"></i>
                             <i className="glyphicon glyphicon-minus expand-node"></i>
                         </div>
-                        <div className="title">{currentNode.name}</div>
+                        <div className="title" tabIndex={currentNode.id}>{currentNode.name}</div>
                         <div className="buttons">
                             {buttons.addGroup}
                             {buttons.addConstant}
@@ -115,14 +89,14 @@ var TreeNode = React.createClass({
             var translations = _.map(FileLoader.getLanguages(), function (lang) {
                 return <li className="translate" key={currentNode.id+lang} data-id={currentNode.id} data-lang={lang}>
                     <i className={'lang flag-icon flag-icon-' + lang}></i>
-                    <div className="text">{currentNode.translations[lang] || ''}</div>
+                    <div className="text" tabIndex={currentNode.id}>{currentNode.translations[lang] || ''}</div>
                 </li>
             });
 
             return (
                 <div className="tree-node tree-constant" id={'tree-node-' + currentNode.id}>
                     <div className="info">
-                        <div className="title">{currentNode.name}</div>
+                        <div className="title" tabIndex={currentNode.id}>{currentNode.name}</div>
                         <div className="buttons">
                             {buttons.deleteNode}
                         </div>

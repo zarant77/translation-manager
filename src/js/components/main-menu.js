@@ -93,15 +93,20 @@ var MainMenu = React.createClass({
     openAllNodes: function () {
         $('.tree-group:gt(0)').removeClass('collapsed');
     },
-    createGroup: function () {
-        Tree.createNode(null, true);
+    addNode: function (parentId, isGroup) {
+        var node = Tree.createNode(parentId, isGroup);
         this.renderEditor();
-        this.domTree.animate({scrollTop: this.domTree.find('ul').first().height()});
+
+        setTimeout(function () {
+            document.location = '#tree-node-' + node.id;
+            $('#tree-node-' + node.id).find('.title').focus();
+        }, 100);
+    },
+    createGroup: function () {
+        this.addNode(null, true);
     },
     createConstant: function () {
-        Tree.createNode(null, false);
-        this.renderEditor();
-        this.domTree.animate({scrollTop: this.domTree.find('ul').first().height()});
+        this.addNode(null, false);
     },
     search: function () {
         var text = $('#input-search').val();

@@ -210,7 +210,7 @@ var Tree = new function () {
     this.createNode = function (parentId, isGroup) {
         var parentNode = (listById[parentId] !== undefined) ? listById[parentId].children : tree.children;
         var id = generateId();
-        var key = 'NEW_NODE_' + id;
+        var key = (isGroup ? 'NEW_GROUP_' : 'NEW_CONSTANT_') + id;
 
         parentNode[id] = new Node(id, key, _.union(parentNode.path || [], [key]), parentNode);
         parentNode[id].isGroup = !!isGroup;
