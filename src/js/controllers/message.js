@@ -5,6 +5,12 @@ var Message = new function () {
             layout: 'center',
             modal: true,
             killer: true,
+            animation: {
+                open: {height: 'toggle'},
+                close: {height: 'toggle'},
+                easing: 'swing',
+                speed: 100
+            },
             buttons: [{
                 addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
                     $noty.close();
