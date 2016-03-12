@@ -19,4 +19,6 @@ $(function () {
     };
 
     Tree.init();
+
+    Editable.init();
 });

@@ -39,59 +39,51 @@ var Editable = new function () {
         count++;
     };
 
-    $(document).keydown(function (e) {
-        var el, ed = $('.editable');
+    this.init = function () {
+        Hotkeys.enter.on('EDIT', function () {
+            var focused = $(document.activeElement);
 
-        switch (e.which) {
-            case 38: // arrow up
-                e.preventDefault();
-                el = ed.eq(--currentFocus);
+            if (focused.hasClass('editable')) {
+                focused.editable('show');
+            }
+        });
 
-                if (el.length) {
-                    el.focus();
-                }
-                else {
-                    currentFocus = el.length - 1;
-                }
-                break;
+        Hotkeys.up.on('MOVE-UP', function () {
+            var ed = $('.editable');
+            var el = ed.eq(--currentFocus);
 
-            case 40: // arrow down
-                e.preventDefault();
-                el = ed.eq(++currentFocus);
+            if (el.length) {
+                el.focus();
+            }
+            else {
+                currentFocus = el.length - 1;
+            }
+        });
 
-                if (el.length) {
-                    el.focus();
-                }
-                else {
-                    currentFocus = 0;
-                }
-                break;
+        Hotkeys.down.on('MOVE-DOWN', function () {
+            var ed = $('.editable');
+            var el = ed.eq(++currentFocus);
 
-            case 13: // enter
-                var focused = $(document.activeElement);
+            if (el.length) {
+                el.focus();
+            }
+            else {
+                currentFocus = 0;
+            }
+        });
 
-                if (focused.hasClass('editable')) {
-                    e.preventDefault();
-                    focused.editable('show');
-                }
-                break;
+        Hotkeys.delete.on('DELETE-NODE', function () {
+            var domLi = $(document.activeElement).parents('li.block').first();
+            var title = domLi.find('.title').first().text();
+            var node = Tree.find(domLi.attr('data-id'));
 
-            case 27: // esc
-                break;
-
-            case 46: // delete
-                var domLi = $(document.activeElement).parents('li.block').first();
-                var title = domLi.find('.title').first().text();
-                var node = Tree.find(domLi.attr('data-id'));
-
-                if (node) {
-                    Message.confirm('Are you sure you want to delete this node?', function () {
-                        Message.info('"' + title + '" was removed');
-                        node.destroy();
-                        domLi.remove();
-                    });
-                }
-                break;
-        }
-    });
+            if (node) {
+                Message.confirm('Are you sure you want to delete this node?', function () {
+                    Message.info('"' + title + '" was removed');
+                    node.destroy();
+                    domLi.remove();
+                });
+            }
+        });
+    };
 }();

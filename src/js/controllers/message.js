@@ -1,6 +1,6 @@
 var Message = new function () {
     this.confirm = function (text, callback) {
-        noty({
+        var n = noty({
             text: text,
             layout: 'center',
             modal: true,
@@ -15,6 +15,19 @@ var Message = new function () {
                     $noty.close();
                 }
             }]
+        });
+
+        Hotkeys.enter.on('CONFIRM', function () {
+            Hotkeys.enter.off('CONFIRM');
+            Hotkeys.esc.off('CONFIRM');
+            n.close();
+            callback();
+        });
+
+        Hotkeys.esc.on('CONFIRM', function () {
+            Hotkeys.enter.off('CONFIRM');
+            Hotkeys.esc.off('CONFIRM');
+            n.close();
         });
     };
 
