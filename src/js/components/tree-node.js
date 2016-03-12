@@ -6,7 +6,7 @@ var TreeNode = React.createClass({
         $(evt.currentTarget).parents('.tree-node').first().toggleClass('collapsed');
     },
     deleteNode: function (evt) {
-        var domLi = $(evt.currentTarget).parents('li').first();
+        var domLi = $(evt.currentTarget).parents('li.block').first();
         var title = domLi.find('.title').first().text();
 
         Message.confirm('Are you sure you want to delete this node?', function () {

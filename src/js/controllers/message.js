@@ -4,6 +4,7 @@ var Message = new function () {
             text: text,
             layout: 'center',
             modal: true,
+            killer: true,
             buttons: [{
                 addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
                     $noty.close();

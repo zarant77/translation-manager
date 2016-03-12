@@ -44,13 +44,15 @@ var MainMenu = React.createClass({
         var lang = $(evt.target).parents('li').attr('data-lang');
 
         Message.confirm('Are you sure you want to delete this language?', function () {
-            FileLoader.removeFile(lang);
+            var filename = FileLoader.removeFile(lang);
 
             self.setState({
                 files: FileLoader.getListOfFiles()
             });
 
-            Message.success('File "' + filename.split('/').pop() + '" was removed');
+            if (filename) {
+                Message.success('File "' + filename.split('/').pop() + '" was removed');
+            }
 
             self.renderEditor();
         });

@@ -5,8 +5,12 @@ var FileLoader = new function () {
 
     this.removeFile = function (lang) {
         if (listOfFiles[lang] !== undefined) {
+            var filename = listOfFiles[lang];
             delete listOfFiles[lang];
+            return filename;
         }
+
+        return null;
     };
 
     this.loadFile = function (lang, filename) {

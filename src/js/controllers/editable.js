@@ -8,7 +8,7 @@ var Editable = new function () {
         domEl.focus(function (event) {
             var ed = $('.editable');
 
-            for (var i=0; i<ed.length; i++) {
+            for (var i = 0; i < ed.length; i++) {
                 if (ed[i] == event.currentTarget) {
                     currentFocus = i;
                     break;
@@ -16,7 +16,7 @@ var Editable = new function () {
             }
         });
 
-        domEl.on('hidden', function() {
+        domEl.on('hidden', function () {
             $(this).focus();
         });
 
@@ -73,6 +73,23 @@ var Editable = new function () {
                 if (focused.hasClass('editable')) {
                     e.preventDefault();
                     focused.editable('show');
+                }
+                break;
+
+            case 27: // esc
+                break;
+
+            case 46: // delete
+                var domLi = $(document.activeElement).parents('li.block').first();
+                var title = domLi.find('.title').first().text();
+                var node = Tree.find(domLi.attr('data-id'));
+
+                if (node) {
+                    Message.confirm('Are you sure you want to delete this node?', function () {
+                        Message.info('"' + title + '" was removed');
+                        node.destroy();
+                        domLi.remove();
+                    });
                 }
                 break;
         }
