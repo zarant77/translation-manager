@@ -1,5 +1,5 @@
 # Translation manager
-[![Node.js](./src/img/logos/logo.png)](https://bitbucket.org/zarant77/fluttershy) Translation manager
+[![Node.js](./src/img/logos/logo.png)](https://github.com/zarant77/translation-manager.git) Translation manager
 
 
 ## Requirements
