@@ -61,7 +61,15 @@ var FsBrowser = React.createClass({
         }
     },
     readDir: function () {
-        var stats = fs.lstatSync(this.state.dir);
+        var stats = null;
+
+        try {
+            stats = fs.lstatSync(this.state.dir);
+        }
+        catch (err) {
+            this.state.dir = path.resolve('./');
+            stats = fs.lstatSync(this.state.dir);
+        }
 
         if (!stats.isDirectory()) {
             this.state.dir = path.resolve('./');
